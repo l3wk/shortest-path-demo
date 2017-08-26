@@ -1,13 +1,13 @@
 package io.github.l3wk.spd.graph;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class Graph {
 
-	private HashMap<Integer, Vertex> vertexesById;
-	private HashMap<Integer, Edge> edgesById;
+	private Map<Integer, Vertex> vertexesById;
+	private Map<Integer, Edge> edgesById;
 	
-	public Graph(HashMap<Integer, Vertex> vertexesById, HashMap<Integer, Edge> edgesById) {
+	public Graph(Map<Integer, Vertex> vertexesById, Map<Integer, Edge> edgesById) {
 		
 		this.vertexesById = vertexesById;
 		this.edgesById = edgesById;

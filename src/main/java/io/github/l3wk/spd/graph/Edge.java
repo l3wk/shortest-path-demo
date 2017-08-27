@@ -6,14 +6,14 @@ public class Edge {
 
 	private Integer id;
 	private Integer sourceId;
-	private Integer destinationId;
+	private Integer targetId;
 	private int weight;
 	
-	public Edge(Integer id, Integer sourceId, Integer destinationId, int weight) {
+	public Edge(Integer id, Integer sourceId, Integer targetId, int weight) {
 		
 		this.id = id;
 		this.sourceId = sourceId;
-		this.destinationId = destinationId;
+		this.targetId = targetId;
 		this.weight = weight;
 	}
 	
@@ -25,8 +25,8 @@ public class Edge {
 		return sourceId;
 	}
 	
-	public Integer getDestinationId() {
-		return destinationId;
+	public Integer getTargetId() {
+		return targetId;
 	}
 	
 	public int getWeight() {

@@ -6,20 +6,20 @@ import java.util.Objects;
 public class Vertex {
 
 	private Integer id;
-	private List<Integer> edges;
+	private List<Integer> edgeIds;
 	
-	public Vertex(Integer id, List<Integer> edges) {
+	public Vertex(Integer id, List<Integer> edgeIds) {
 		
 		this.id = id;
-		this.edges = edges;
+		this.edgeIds = edgeIds;
 	}
 	
 	public Integer getId() {
 		return id;
 	}
 	
-	public List<Integer> getEdges() {
-		return edges;
+	public List<Integer> getEdgeIds() {
+		return edgeIds;
 	}
 	
 	@Override

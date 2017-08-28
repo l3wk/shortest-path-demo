@@ -1,5 +1,6 @@
 *.log
 *.jar
+*.pdf
 *.class
 
 .classpath

@@ -5,15 +5,15 @@ import java.util.Objects;
 public class Edge {
 
 	private Integer id;
-	private Vertex source;
-	private Vertex destination;
+	private Integer sourceId;
+	private Integer targetId;
 	private int weight;
 	
-	public Edge(Integer id, Vertex source, Vertex destination, int weight) {
+	public Edge(Integer id, Integer sourceId, Integer targetId, int weight) {
 		
 		this.id = id;
-		this.source = source;
-		this.destination = destination;
+		this.sourceId = sourceId;
+		this.targetId = targetId;
 		this.weight = weight;
 	}
 	
@@ -21,12 +21,12 @@ public class Edge {
 		return id;
 	}
 	
-	public Vertex getSource() {
-		return source;
+	public Integer getSourceId() {
+		return sourceId;
 	}
 	
-	public Vertex getDestination() {
-		return destination;
+	public Integer getTargetId() {
+		return targetId;
 	}
 	
 	public int getWeight() {

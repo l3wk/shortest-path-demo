@@ -11,6 +11,37 @@ import org.junit.Test;
 public class GraphTestCase {
 
 	@Test
+	public void testIsEmpty_emptyGraph() {
+				
+		assertTrue(buildGraph().isEmpty());
+	}
+	
+	@Test
+	public void testIsEmpty_graphWithVertexAndNoEdge() {
+		
+		assertFalse(buildGraph(Arrays.asList(buildVertex(1))).isEmpty());
+	}
+	
+	@Test
+	public void testIsEmpty_graphWithEdgeAndNoVertex() {
+		
+		Edge e1 = new Edge(1, 1, 2, 1);
+		
+		assertFalse(buildGraph(Collections.<Vertex>emptyList(), Arrays.asList(e1)).isEmpty());
+	}
+	
+	@Test
+	public void testIsEmpty_graphWithVertexesAndEdges() {
+		
+		Edge e1 = new Edge(1, 1, 2, 1);
+		
+		Vertex v1 = buildVertex(1, Arrays.asList(1));
+		Vertex v2 = buildVertex(2);
+		
+		assertFalse(buildGraph(Arrays.asList(v1, v2), Arrays.asList(e1)).isEmpty());
+	}
+	
+	@Test
 	public void testGetNeighbours_nullVertex() {
 				
 		List<Vertex> neighbours = buildGraph().getNeighbours(null);

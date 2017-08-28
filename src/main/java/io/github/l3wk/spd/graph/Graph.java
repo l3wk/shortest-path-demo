@@ -27,6 +27,11 @@ public class Graph {
 		return vertexesById.values();
 	}
 	
+	public boolean isEmpty() {
+		
+		return vertexesById.isEmpty() && edgesById.isEmpty();
+	}
+	
 	public List<Vertex> getNeighbours(Vertex vertex) {
 		
 		if (vertex == null) {

@@ -19,7 +19,7 @@ public class DijkstraSearchService implements SearchService {
 	// References:
 	//	- https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 	//	- http://www.vogella.com/tutorials/JavaAlgorithmsDijkstra/article.html
-	//  - https://codereview.stackexchange.com/questions/32354/implementation-of-dijkstras-algorithm
+	//	- https://codereview.stackexchange.com/questions/32354/implementation-of-dijkstras-algorithm
 
 	private class VertexDistanceComparator implements Comparator<Vertex> {
 		

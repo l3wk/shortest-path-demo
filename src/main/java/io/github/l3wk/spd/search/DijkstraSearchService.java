@@ -1,8 +1,11 @@
 package io.github.l3wk.spd.search;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
@@ -11,15 +14,30 @@ import io.github.l3wk.spd.graph.Vertex;
 
 public class DijkstraSearchService implements SearchService {
 	
-	// Shortest path search service using Dijkstra's algorithm.
+	// Shortest path search service using Dijkstra's algorithm with priority queue.
 	//
 	// References:
 	//	- https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 	//	- http://www.vogella.com/tutorials/JavaAlgorithmsDijkstra/article.html
+	//  - https://codereview.stackexchange.com/questions/32354/implementation-of-dijkstras-algorithm
 
+	private class VertexDistanceComparator implements Comparator<Vertex> {
+		
+		@Override
+		public int compare(Vertex left, Vertex right) {
+			
+			int l = getShortestDistance(left);
+			int r = getShortestDistance(right);
+			
+			return l == r ? 0 : (l > r ? 1 : -1);
+		}
+	};
+	
+	private static final int DEFAULT_INITIAL_QUEUE_SIZE = 10;
+	
 	private Graph graph;
 	
-	Set<Vertex> unvisited;
+	private Queue<Vertex> unvisited;
 	
 	private Map<Vertex, Integer> distances;
 	private Map<Vertex, Vertex> predecessors;
@@ -32,27 +50,26 @@ public class DijkstraSearchService implements SearchService {
 	@Override
 	public Stack<Vertex> findShortestPath(Vertex source, Vertex target) {
 		
-		unvisited = new HashSet<Vertex>();
+		final Set<Vertex> visited = new HashSet<Vertex>();
+		
+		unvisited = new PriorityQueue<Vertex>(DEFAULT_INITIAL_QUEUE_SIZE, new VertexDistanceComparator());
 		
 		distances = new HashMap<Vertex, Integer>();
 		predecessors = new HashMap<Vertex, Vertex>();
 
-		if (graph != null) {
-			graph.getVertexes().forEach(vertex -> unvisited.add(vertex));
+		if (graph != null && source != null) {
 			
-			distances.put(source, 0);
+			initialiseSearch(source);
 			
 			while (!unvisited.isEmpty()) {
 				
-				Vertex node = getVertexWithMinimumDistance(unvisited);
-				
-				unvisited.remove(node);
-				
-				if (node.equals(target)) {
+				Vertex node = unvisited.poll();
+												
+				if (visited.add(node) && node.equals(target)) {
 					break;	// terminate the search, we found the shortest path!
 				} else {
 					graph.getNeighbours(node).stream()
-						.filter(neighbour -> unvisited.contains(neighbour))
+						.filter(neighbour -> !visited.contains(neighbour))
 						.forEach(unvisitedNeighbour -> findShortestDistance(node, unvisitedNeighbour));
 				}
 			}
@@ -61,22 +78,10 @@ public class DijkstraSearchService implements SearchService {
 		return getPath(target);
 	}
 	
-	private Vertex getVertexWithMinimumDistance(Set<Vertex> vertexes) {
+	private void initialiseSearch(Vertex source) {
 		
-		Vertex minimum = null;
-		
-		for (Vertex vertex: vertexes) {
-			
-			if (minimum == null) {
-				minimum = vertex;
-			} else {
-				if (getShortestDistance(vertex) < getShortestDistance(minimum)) {
-					minimum = vertex;
-				}
-			}
-		}
-		
-		return minimum;
+		distances.put(source, 0);
+		unvisited.add(source);
 	}
 	
 	private Integer getShortestDistance(Vertex vertex) {

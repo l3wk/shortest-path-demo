@@ -40,6 +40,18 @@ public class DijkstraSearchServiceTestCase {
 	}
 	
 	@Test
+	public void testFindShortestPath_noPathBetweenVertexes() {
+			
+		List<Vertex> v = Arrays
+				.asList(buildVertex(1), 
+						buildVertex(2));
+		
+		SearchService service = new DijkstraSearchService(buildGraph(v));
+		
+		assertTrue(service.findShortestPath(v.get(0), v.get(1)).isEmpty());
+	}
+	
+	@Test
 	public void testFindShortestPath_pathContainsInfiniteLoop() {
 		
 		List<Edge> e = Arrays.asList(buildEdge(1, 1, 1));
@@ -279,7 +291,12 @@ public class DijkstraSearchServiceTestCase {
 	
 	private Graph buildGraph() {
 		
-		return new Graph(Collections.<Vertex>emptyList(), Collections.<Edge>emptyList());
+		return buildGraph(Collections.<Vertex>emptyList());
+	}
+	
+	private Graph buildGraph(List<Vertex> vertexes) {
+		
+		return new Graph(vertexes, Collections.<Edge>emptyList());
 	}
 	
 	private void assertPath(Stack<Vertex> path, List<Vertex> expectedPath) {

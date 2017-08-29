@@ -13,14 +13,14 @@ import io.github.l3wk.spd.graph.Edge;
 import io.github.l3wk.spd.graph.Graph;
 import io.github.l3wk.spd.graph.Vertex;
 
-public class JsonGraphLoaderTestCase {
+public class JsonSocialNetworkGraphLoaderTestCase {
 
 	private GraphLoader loader;
 	
 	@Before
 	public void setUp() throws Exception {
 		
-		loader = new JsonGraphLoader();
+		loader = new JsonSocialNetworkGraphLoader();
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class JsonGraphLoaderTestCase {
 		List<Edge> edges = new ArrayList<>(graph.getEdges());
 		
 		assertEquals(1, edges.size());
-		assertEdge(edges.get(0), 1, 2, JsonGraphLoader.DEFAULT_SKILL);
+		assertEdge(edges.get(0), 1, 2, JsonSocialNetworkGraphLoader.DEFAULT_SKILL);
 	}
 	
 	@Test
@@ -173,9 +173,9 @@ public class JsonGraphLoaderTestCase {
 		List<Edge> edges = new ArrayList<>(graph.getEdges());
 		
 		assertEquals(3, edges.size());
-		assertEdge(edges.get(0), 1, 2, JsonGraphLoader.DEFAULT_SKILL);
-		assertEdge(edges.get(1), 1, 3, JsonGraphLoader.DEFAULT_SKILL);
-		assertEdge(edges.get(2), 2, 3, JsonGraphLoader.DEFAULT_SKILL);
+		assertEdge(edges.get(0), 1, 2, JsonSocialNetworkGraphLoader.DEFAULT_SKILL);
+		assertEdge(edges.get(1), 1, 3, JsonSocialNetworkGraphLoader.DEFAULT_SKILL);
+		assertEdge(edges.get(2), 2, 3, JsonSocialNetworkGraphLoader.DEFAULT_SKILL);
 	}
 	
 	@Test

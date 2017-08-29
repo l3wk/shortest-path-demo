@@ -16,7 +16,7 @@ import io.github.l3wk.spd.graph.Edge;
 import io.github.l3wk.spd.graph.Graph;
 import io.github.l3wk.spd.graph.Vertex;
 
-public class JsonGraphLoader implements GraphLoader {
+public class JsonSocialNetworkGraphLoader implements GraphLoader {
 
 	private static final String USER_KEY = "user";
 	private static final String FRIENDS_KEY = "friends";

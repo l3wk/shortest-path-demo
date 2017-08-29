@@ -50,12 +50,12 @@ public class DijkstraSearchService implements SearchService {
 	@Override
 	public Stack<Vertex> findShortestPath(Vertex source, Vertex target) {
 		
-		final Set<Vertex> visited = new HashSet<Vertex>();
+		final Set<Vertex> visited = new HashSet<>();
 		
-		unvisited = new PriorityQueue<Vertex>(DEFAULT_INITIAL_QUEUE_SIZE, new VertexDistanceComparator());
+		unvisited = new PriorityQueue<>(DEFAULT_INITIAL_QUEUE_SIZE, new VertexDistanceComparator());
 		
-		distances = new HashMap<Vertex, Integer>();
-		predecessors = new HashMap<Vertex, Vertex>();
+		distances = new HashMap<>();
+		predecessors = new HashMap<>();
 
 		if (graph != null && source != null) {
 			
@@ -106,7 +106,7 @@ public class DijkstraSearchService implements SearchService {
 
 	private Stack<Vertex> getPath(Vertex target) {
 		
-		Stack<Vertex> path = new Stack<Vertex>();
+		Stack<Vertex> path = new Stack<>();
 		
 		if (!predecessors.isEmpty()) {
 			Vertex step = target;

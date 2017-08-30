@@ -19,6 +19,14 @@ public class Graph {
 		this.vertexesById = vertexes.stream().collect(Collectors.toMap(Vertex::getId, Function.identity()));
 	}
 	
+	public Edge getEdge(Integer id) {
+		return edgesById.get(id);
+	}
+	
+	public Vertex getVertex(Integer id) {
+		return vertexesById.get(id);
+	}
+	
 	public Collection<Edge> getEdges() {
 		return edgesById.values();
 	}
@@ -52,7 +60,7 @@ public class Graph {
 		
 		Optional<Edge> connection = source.getEdgeIds().stream()
 				.map(id -> edgesById.get(id))
-				.filter(edge -> edge.getTargetId() == target.getId())
+				.filter(edge -> edge.getTargetId().equals(target.getId()))
 				.findFirst();
 		
 		return connection.isPresent() ? connection.get().getWeight() : null;

@@ -172,6 +172,22 @@ public class GraphTestCase {
 		assertEquals(e1.getWeight(), distance.intValue());
 	}
 	
+	@Test
+	public void testGetDistanceBetweenNeighbours_edgeObjectIdsDoNotMatchVertexIds() {
+		
+		Edge e1 = new Edge(1, 1, new Integer(2), 1);
+		
+		Vertex v1 = buildVertex(1, Arrays.asList(1));
+		Vertex v2 = buildVertex(2);
+		
+		Graph graph = buildGraph(Arrays.asList(v1, v2), Arrays.asList(e1));
+		
+		Integer distance = graph.getDistanceBetweenNeighbours(v1, v2);
+		
+		assertNotNull(distance);
+		assertEquals(e1.getWeight(), distance.intValue());
+	}
+	
 	private Graph buildGraph() {
 		
 		return buildGraph(Collections.<Vertex>emptyList());

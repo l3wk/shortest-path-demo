@@ -1,13 +1,15 @@
 package io.github.l3wk.spd.search;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.Stack;
 
 import io.github.l3wk.spd.graph.Graph;
 import io.github.l3wk.spd.graph.Vertex;
@@ -48,7 +50,7 @@ public class DijkstraSearchService implements SearchService {
 	}
 	
 	@Override
-	public Stack<Vertex> findShortestPath(Vertex source, Vertex target) {
+	public List<Vertex> findShortestPath(Vertex source, Vertex target) {
 		
 		final Set<Vertex> visited = new HashSet<>();
 		
@@ -104,19 +106,21 @@ public class DijkstraSearchService implements SearchService {
 		}
 	}
 
-	private Stack<Vertex> getPath(Vertex target) {
+	private List<Vertex> getPath(Vertex target) {
 		
-		Stack<Vertex> path = new Stack<>();
+		List<Vertex> path = new ArrayList<>();
 		
 		if (!predecessors.isEmpty()) {
 			Vertex step = target;
 			
 			while (predecessors.get(step) != null) {
-				path.push(step);
+				path.add(step);
 				step = predecessors.get(step);
 			}
-			path.push(step);
+			path.add(step);
 		}
+		
+		Collections.reverse(path);
 		
 		return path;
 	}

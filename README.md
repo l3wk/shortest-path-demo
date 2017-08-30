@@ -23,6 +23,6 @@ mvn -q exec:java -Dexec.args="--sourceId=<source_id> --targetId=<target_id> --da
 ```
 
 Where:
-- *source_id* is an integer representing the node in the graph from which to start the search.
-- *target_id* is an integer representing the node in the graph which is the target of the search.
-- *data_file* is a json file containing the records which represent the data structure of the graph.
+- *source_id* is an integer representing the user in the graph from which to start the search.
+- *target_id* is an integer representing the user in the graph which is the target of the search.
+- *data_file* is a json file containing the records which represent the social network graph.

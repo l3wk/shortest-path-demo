@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 import org.junit.Test;
 
@@ -299,11 +298,13 @@ public class DijkstraSearchServiceTestCase {
 		return new Graph(vertexes, Collections.<Edge>emptyList());
 	}
 	
-	private void assertPath(Stack<Vertex> path, List<Vertex> expectedPath) {
+	private void assertPath(List<Vertex> path, List<Vertex> expectedPath) {
 		
 		assertFalse(path.isEmpty());
 		assertEquals(path.size(), expectedPath.size());
 		
-		expectedPath.forEach(vertex -> assertEquals(vertex, path.pop()));
+		for (int i = 0; i < expectedPath.size(); i++) {
+			assertEquals(expectedPath.get(i), path.get(i));
+		}	
 	}
 }

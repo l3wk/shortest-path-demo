@@ -72,7 +72,7 @@ public class DijkstraSearchService implements SearchService {
 				} else {
 					graph.getNeighbours(node).stream()
 						.filter(neighbour -> !visited.contains(neighbour))
-						.forEach(unvisitedNeighbour -> findShortestDistance(node, unvisitedNeighbour));
+						.forEach(unvisitedNeighbour -> evaluateNeighbour(node, unvisitedNeighbour));
 				}
 			}
 		}
@@ -86,14 +86,7 @@ public class DijkstraSearchService implements SearchService {
 		unvisited.add(source);
 	}
 	
-	private Integer getShortestDistance(Vertex vertex) {
-		
-		Integer distance = distances.get(vertex);
-		
-		return distance == null ? Integer.MAX_VALUE : distance;
-	}
-	
-	private void findShortestDistance(Vertex node, Vertex unvisitedNeighbour) {
+	private void evaluateNeighbour(Vertex node, Vertex unvisitedNeighbour) {
 		
 		final int alternative = getShortestDistance(node) + graph.getDistanceBetweenNeighbours(node, unvisitedNeighbour);
 		
@@ -104,6 +97,13 @@ public class DijkstraSearchService implements SearchService {
 			
 			unvisited.add(unvisitedNeighbour);
 		}
+	}
+	
+	private Integer getShortestDistance(Vertex vertex) {
+		
+		Integer distance = distances.get(vertex);
+		
+		return distance == null ? Integer.MAX_VALUE : distance;
 	}
 
 	private List<Vertex> getPath(Vertex target) {

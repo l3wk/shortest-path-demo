@@ -18,6 +18,10 @@ import io.github.l3wk.spd.graph.Vertex;
 
 public class JsonSocialNetworkGraphLoader implements GraphLoader {
 
+	// It is possible to save a few seconds when loading the test data set by using parallel streams and
+	// concurrent hash maps, however this incurs additional clean-up costs at the time of JVM shutdown which
+	// results in an overall execution time that is about the same as a single-threaded implementation.
+	
 	private static final String USER_KEY = "user";
 	private static final String FRIENDS_KEY = "friends";
 	private static final String SKILL_KEY = "skill";
@@ -26,45 +30,50 @@ public class JsonSocialNetworkGraphLoader implements GraphLoader {
 	
 	private AtomicInteger edgeIds = new AtomicInteger();
 	
-	private List<Vertex> vertexes;
-	private List<Edge> edges;
-	private Map<Integer, Integer> skillByUser;
+	private Map<Integer, Vertex> usersById;
+	private Map<Integer, Edge> friendsById;
+	private Map<Integer, Integer> skillsByUser;
 	
 	@Override
 	public Graph load(Stream<String> stream) {
-		
+				
 		initialise();
 		
 		if (stream != null) {
-			stream.filter(entry -> !entry.isEmpty()).forEach(entry -> {
-								
-				JSONObject json = new JSONObject(entry);
-				
-				if (json.has(USER_KEY)) {
-					int user = loadUser(json);
-					
-					skillByUser.put(user, loadSkill(json));
-					
-					List<Edge> friends = loadFriends(json).stream()
-							.map(friendId -> new Edge(edgeIds.getAndIncrement(), user, friendId, DEFAULT_SKILL))
-							.collect(Collectors.toList());
-					
-					vertexes.add(new Vertex(user, friends.stream().map(friend -> friend.getId()).collect(Collectors.toList())));
-					edges.addAll(friends);
-				}
-			});
+			stream.filter(entry -> !entry.isEmpty()).forEach(entry -> loadEntry(entry));
 			
 			populateEdgeWeights();
 		}
-		
-		return new Graph(vertexes, edges);
+				
+		return new Graph(usersById, friendsById);
 	}
 	
 	private void initialise() {
 		
-		vertexes = new ArrayList<>();
-		edges = new ArrayList<>();
-		skillByUser = new HashMap<>();
+		usersById = new HashMap<>();
+		friendsById = new HashMap<>();
+		skillsByUser = new HashMap<>();
+	}
+	
+	private void loadEntry(String entry) {
+		
+		JSONObject json = new JSONObject(entry);
+		
+		if (json.has(USER_KEY)) {
+			int user = loadUser(json);
+			
+			skillsByUser.put(user, loadSkill(json));
+			
+			List<Edge> friends = loadFriends(json).stream()
+					.map(friendId -> new Edge(edgeIds.getAndIncrement(), user, friendId, DEFAULT_SKILL))
+					.collect(Collectors.toList());
+			
+			usersById.put(user, new Vertex(user, friends.stream()
+					.map(friend -> friend.getId())
+					.collect(Collectors.toList())));
+			
+			friends.forEach(friend -> friendsById.put(friend.getId(), friend));
+		}
 	}
 	
 	private int loadUser(JSONObject object) {
@@ -95,10 +104,10 @@ public class JsonSocialNetworkGraphLoader implements GraphLoader {
 		
 		// populate the graph edge weights with the inverse skill of the edge target
 		
-		OptionalInt maxSkill = skillByUser.values().stream().mapToInt(Integer::intValue).max();
+		OptionalInt maxSkill = skillsByUser.values().stream().mapToInt(Integer::intValue).max();
 		
 		if (maxSkill.isPresent()) {
-			edges.forEach(edge -> edge.setWeight(maxSkill.getAsInt() - skillByUser.get(edge.getTargetId())));
+			friendsById.values().forEach(edge -> edge.setWeight(maxSkill.getAsInt() - skillsByUser.get(edge.getTargetId())));
 		}
 	}
 }

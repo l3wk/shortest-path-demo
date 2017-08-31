@@ -26,3 +26,5 @@ Where:
 - *source_id* is an integer representing the user in the graph from which to start the search.
 - *target_id* is an integer representing the user in the graph which is the target of the search.
 - *data_file* is a json file containing the records which represent the social network graph.
+
+> Note: The first time a command is executed, maven will download any dependencies required, resulting in slightly longer execution times than usual. Omitting the -q flag will enable verbose maven log output, which will provide status information regarding the progress of the downloads.

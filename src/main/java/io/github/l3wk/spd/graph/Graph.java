@@ -13,6 +13,12 @@ public class Graph {
 	private Map<Integer, Edge> edgesById;
 	private Map<Integer, Vertex> vertexesById;
 	
+	public Graph(Map<Integer, Vertex> vertexesById, Map<Integer, Edge> edgesById) {
+
+		this.edgesById = edgesById;
+		this.vertexesById = vertexesById;
+	}
+	
 	public Graph(Collection<Vertex> vertexes, Collection<Edge> edges) {
 
 		this.edgesById = edges.stream().collect(Collectors.toMap(Edge::getId, Function.identity()));

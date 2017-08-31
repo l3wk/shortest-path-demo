@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.json.JSONObject;
@@ -28,11 +27,11 @@ public class JsonSocialNetworkGraphLoader implements GraphLoader {
 	
 	public static final int DEFAULT_SKILL = 0;
 	
-	private AtomicInteger edgeIds = new AtomicInteger();
+	private AtomicInteger edgeIdGenerator = new AtomicInteger();
 	
 	private Map<Integer, Vertex> usersById;
 	private Map<Integer, Edge> friendsById;
-	private Map<Integer, Integer> skillsByUser;
+	private Map<Integer, Integer> skillsByUserId;
 	
 	@Override
 	public Graph load(Stream<String> stream) {
@@ -52,51 +51,49 @@ public class JsonSocialNetworkGraphLoader implements GraphLoader {
 		
 		usersById = new HashMap<>();
 		friendsById = new HashMap<>();
-		skillsByUser = new HashMap<>();
+		skillsByUserId = new HashMap<>();
 	}
 	
 	private void loadEntry(String entry) {
 		
-		JSONObject json = new JSONObject(entry);
-		
+		loadUser(new JSONObject(entry));
+	}
+	
+	private void loadUser(JSONObject json) {
+		 
 		if (json.has(USER_KEY)) {
-			int user = loadUser(json);
-			
-			skillsByUser.put(user, loadSkill(json));
-			
-			List<Edge> friends = loadFriends(json).stream()
-					.map(friendId -> new Edge(edgeIds.getAndIncrement(), user, friendId, DEFAULT_SKILL))
-					.collect(Collectors.toList());
-			
-			usersById.put(user, new Vertex(user, friends.stream()
-					.map(friend -> friend.getId())
-					.collect(Collectors.toList())));
-			
-			friends.forEach(friend -> friendsById.put(friend.getId(), friend));
+			int userId = json.getInt(USER_KEY);
+		
+			skillsByUserId.put(userId, loadSkill(json));
+			usersById.put(userId, new Vertex(userId, loadFriends(userId, json)));
 		}
 	}
 	
-	private int loadUser(JSONObject object) {
+	private int loadSkill(JSONObject json) {
 		
-		return object.getInt(USER_KEY);
+		return json.has(SKILL_KEY) ? json.getInt(SKILL_KEY) : DEFAULT_SKILL;
 	}
 	
-	private int loadSkill(JSONObject object) {
+	private List<Integer> loadFriends(int userId, JSONObject json) {
 		
-		return object.has(SKILL_KEY) ? object.getInt(SKILL_KEY) : DEFAULT_SKILL;
-	}
-	
-	private List<Integer> loadFriends(JSONObject object) {
-		
-		if (!object.has(FRIENDS_KEY)) {
+		if (!json.has(FRIENDS_KEY)) {
 			return Collections.<Integer>emptyList();
 			
-		} else {		
-			List<Integer> friends = new ArrayList<>();
+		} else {
+			List<Integer> edgeIds = new ArrayList<>();
+			List<Integer> friendIds = new ArrayList<>();
 			
-			object.getJSONArray(FRIENDS_KEY).forEach(id -> friends.add((Integer) id));
+			json.getJSONArray(FRIENDS_KEY).forEach(id -> friendIds.add((Integer) id));
 			
-			return friends;
+			friendIds.stream().forEach(friendId -> {
+				
+				Integer edgeId = edgeIdGenerator.getAndIncrement();
+				
+				edgeIds.add(edgeId);
+				friendsById.put(edgeId, new Edge(edgeId, userId, friendId, DEFAULT_SKILL));
+			});
+			
+			return edgeIds;
 		}
 	}
 	
@@ -104,10 +101,10 @@ public class JsonSocialNetworkGraphLoader implements GraphLoader {
 		
 		// populate the graph edge weights with the inverse skill of the edge target
 		
-		OptionalInt maxSkill = skillsByUser.values().stream().mapToInt(Integer::intValue).max();
+		OptionalInt maxSkill = skillsByUserId.values().stream().mapToInt(Integer::intValue).max();
 		
 		if (maxSkill.isPresent()) {
-			friendsById.values().forEach(edge -> edge.setWeight(maxSkill.getAsInt() - skillsByUser.get(edge.getTargetId())));
+			friendsById.values().forEach(edge -> edge.setWeight(maxSkill.getAsInt() - skillsByUserId.get(edge.getTargetId())));
 		}
 	}
 }

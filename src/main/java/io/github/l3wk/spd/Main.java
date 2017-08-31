@@ -11,7 +11,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import io.github.l3wk.spd.graph.Graph;
-import io.github.l3wk.spd.loader.GraphLoader;
 import io.github.l3wk.spd.loader.JsonSocialNetworkGraphLoader;
 import io.github.l3wk.spd.search.DijkstraSearchService;
 import io.github.l3wk.spd.search.SearchService;
@@ -49,15 +48,12 @@ public class Main {
 	
 	private static Graph loadGraph(String filepath) throws IOException {
 	
-		Graph graph = null;
-		GraphLoader loader = new JsonSocialNetworkGraphLoader();
-	
 		System.out.println("Loading data set: " + filepath);
 		
-		graph = loader.load(Files.lines(Paths.get(filepath)));
+		Graph graph = new JsonSocialNetworkGraphLoader().load(Files.lines(Paths.get(filepath)));
 		
 		if (graph != null) {
-			System.out.println("Loaded graph with " + graph.getVertexes().size() + " vertexes and " + graph.getEdges().size() + " edges.");
+			System.out.println(" * Loaded graph with " + graph.getVertexes().size() + " vertexes and " + graph.getEdges().size() + " edges.");
 		}
 		
 		return graph;
@@ -69,6 +65,6 @@ public class Main {
 		
 		SearchService searchService = new DijkstraSearchService(graph);
 		
-		System.out.println(searchService.findShortestPath(graph.getVertex(sourceId), graph.getVertex(targetId)));
+		System.out.println(" * Result: " + searchService.findShortestPath(graph.getVertex(sourceId), graph.getVertex(targetId)));
 	}
 }
